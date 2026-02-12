@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Rahma ❤️ Mohab</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&family=Pacifico&display=swap" rel="stylesheet">
 
 <style>
 body {
@@ -80,7 +81,7 @@ button {
     background: transparent;
     border: 2px solid white;
     color: white;
-    position: absolute;
+    position: fixed; /* stays within viewport */
 }
 
 /* Floating hearts */
@@ -111,8 +112,9 @@ button {
     position: fixed;
     right: 20px;
     bottom: 10px;
-    font-size: 16px;
-    font-weight: 600;
+    font-size: 24px;
+    font-family: 'Pacifico', cursive; /* signature font */
+    font-weight: normal;
     color: white;
     text-shadow: 0 0 5px rgba(0,0,0,0.5);
     z-index: 100;
@@ -127,7 +129,7 @@ button {
 
 <!-- MUSIC -->
 <audio id="music" loop>
-    <source src="https://files.catbox.moe/9v2d3e.mp3" type="audio/mp3">
+    <source src="https://files.catbox.moe/tvzcqq.mp3" type="audio/mp3">
 </audio>
 
 <div class="container" style="display:none;" id="mainContent">
@@ -140,7 +142,7 @@ button {
 </div>
 
 <!-- Signature -->
-<div id="signature">ENG Mohab❤️</div>
+<div id="signature">UR Lovely Eng MO ❤️</div>
 
 <script>
 // Start music on tap
@@ -165,19 +167,36 @@ setInterval(() => {
     setTimeout(()=>heart.remove(),6000);
 },300);
 
-// NO button runs away
+// NO button runs away safely
 const noBtn = document.getElementById("noBtn");
-function moveNo() {
-    const x = Math.random()*(window.innerWidth-120);
-    const y = Math.random()*(window.innerHeight-60);
-    noBtn.style.left = x+"px";
-    noBtn.style.top = y+"px";
-}
-noBtn.addEventListener("mouseover",moveNo);
-noBtn.addEventListener("mousedown",moveNo);
-noBtn.addEventListener("touchstart",moveNo);
 
-// YES click effect with hearts explosion
+function moveNo() {
+    const btnWidth = noBtn.offsetWidth;
+    const btnHeight = noBtn.offsetHeight;
+    const padding = 10;
+
+    const maxX = window.innerWidth - btnWidth - padding;
+    const maxY = window.innerHeight - btnHeight - padding;
+
+    const x = Math.random() * maxX;
+    const y = Math.random() * maxY;
+
+    noBtn.style.left = x + "px";
+    noBtn.style.top = y + "px";
+}
+
+noBtn.addEventListener("mouseover", moveNo);
+noBtn.addEventListener("mousedown", moveNo);
+noBtn.addEventListener("touchstart", moveNo);
+
+// Keep NO button inside viewport on resize / rotation
+window.addEventListener("resize", () => {
+    const rect = noBtn.getBoundingClientRect();
+    if(rect.right > window.innerWidth) noBtn.style.left = window.innerWidth - noBtn.offsetWidth - 10 + "px";
+    if(rect.bottom > window.innerHeight) noBtn.style.top = window.innerHeight - noBtn.offsetHeight - 10 + "px";
+});
+
+// YES click effect with smooth hearts explosion
 document.getElementById("yesBtn").onclick = () => {
     content.style.display = "none";
 
@@ -193,41 +212,54 @@ document.getElementById("yesBtn").onclick = () => {
         color:white;
         background:linear-gradient(135deg,#ff6a88,#ff99ac);
         flex-direction:column;
+        overflow: hidden;
     `;
     yayDiv.innerHTML = `<div id="yayText">HELL YEAHH!! ❤️</div>`;
     document.body.appendChild(yayDiv);
 
-    // Hearts explosion at random positions around screen center
+    const hearts = [];
+    const numHearts = 100;
     const centerX = window.innerWidth / 2;
-    const centerY = window.innerHeight / 2 + 50; // slightly lower
-    for(let i=0;i<100;i++){
+    const centerY = window.innerHeight / 2 + 50;
+
+    for (let i = 0; i < numHearts; i++) {
         const heart = document.createElement("div");
         heart.innerHTML = "❤️";
-        heart.style.position="absolute";
-        // random offset from center
-        heart.style.left = centerX + (Math.random()-0.5)*400 + "px";
-        heart.style.top = centerY + (Math.random()-0.5)*300 + "px";
-        heart.style.fontSize = (Math.random()*30+20)+"px";
+        heart.style.position = "absolute";
+        heart.style.left = centerX + "px";
+        heart.style.top = centerY + "px";
+        heart.style.fontSize = (Math.random() * 30 + 20) + "px";
         heart.style.opacity = 1;
-        document.body.appendChild(heart);
 
-        // Animate outward with faster fade
-        let dx = (Math.random()-0.5)*12;
-        let dy = (Math.random()-0.5)*12;
-        let op = 1;
-        const move = setInterval(()=>{
-            const left = parseFloat(heart.style.left);
-            const top = parseFloat(heart.style.top);
-            heart.style.left = left + dx + "px";
-            heart.style.top = top + dy + "px";
-            op -= 0.03;
-            heart.style.opacity = op;
-            if(op<=0){
-                heart.remove();
-                clearInterval(move);
-            }
-        },16);
+        yayDiv.appendChild(heart);
+
+        const dx = (Math.random() - 0.5) * 12;
+        const dy = (Math.random() - 0.5) * 12;
+
+        hearts.push({el: heart, x: centerX, y: centerY, dx, dy, opacity: 1});
     }
+
+    function animate() {
+        let alive = false;
+        hearts.forEach(h => {
+            if (h.opacity > 0) {
+                h.x += h.dx;
+                h.y += h.dy;
+                h.opacity -= 0.02;
+
+                h.el.style.left = h.x + "px";
+                h.el.style.top = h.y + "px";
+                h.el.style.opacity = h.opacity;
+
+                alive = true;
+            } else {
+                h.el.remove();
+            }
+        });
+        if (alive) requestAnimationFrame(animate);
+    }
+
+    animate();
 };
 </script>
 
