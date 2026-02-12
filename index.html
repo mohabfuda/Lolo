@@ -3,47 +3,49 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Rahma ❤️ Mohab</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
 body {
     margin: 0;
-    font-family: 'Inter', sans-serif;
-    background: linear-gradient(135deg, #ff6a88, #ff99ac);
+    font-family: 'Quicksand', sans-serif;
+    background: linear-gradient(135deg,#ff6a88,#ff99ac);
     height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     overflow: hidden;
     color: white;
     text-align: center;
 }
 
-/* Floating hearts */
-.heart {
-    position: absolute;
-    font-size: 20px;
-    animation: float 6s linear infinite;
+/* Start screen */
+#startScreen {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg,#ff6a88,#ff99ac);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 28px;
+    font-weight: 600;
+    cursor: pointer;
+    z-index: 10;
 }
 
-@keyframes float {
-    from { transform: translateY(100vh); opacity: 1; }
-    to { transform: translateY(-10vh); opacity: 0; }
-}
-
+/* Main content */
 .container {
-    max-width: 700px;
-    position: relative;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
 }
 
 h1 {
     font-size: 48px;
-    font-weight: 600;
 }
 
+/* Buttons */
 .buttons {
     position: relative;
     margin-top: 40px;
@@ -59,14 +61,19 @@ button {
     transition: 0.3s;
 }
 
+/* Glowing animated YES button */
 #yesBtn {
     background: white;
     color: #ff6a88;
     font-weight: 600;
+    box-shadow: 0 0 20px #fff;
+    animation: glow 2s infinite alternate;
 }
 
-#yesBtn:hover {
-    transform: scale(1.1);
+@keyframes glow {
+    0% { box-shadow: 0 0 10px #fff; }
+    50% { box-shadow: 0 0 25px #fff; }
+    100% { box-shadow: 0 0 10px #fff; }
 }
 
 #noBtn {
@@ -75,68 +82,152 @@ button {
     color: white;
     position: absolute;
 }
+
+/* Floating hearts */
+.heart {
+    position: absolute;
+    font-size: 20px;
+    animation: float 6s linear infinite;
+}
+
+@keyframes float {
+    from { transform: translateY(100vh); opacity:1; }
+    to { transform: translateY(-10vh); opacity:0; }
+}
+
+/* YAAYY text animation */
+#yayText {
+    animation: bounceGlow 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes bounceGlow {
+    0% { transform: scale(1); text-shadow: 0 0 10px #fff; }
+    50% { transform: scale(1.1); text-shadow: 0 0 30px #fff; }
+    100% { transform: scale(1); text-shadow: 0 0 10px #fff; }
+}
+
+/* Signature at bottom-right */
+#signature {
+    position: fixed;
+    right: 20px;
+    bottom: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+    text-shadow: 0 0 5px rgba(0,0,0,0.5);
+    z-index: 100;
+}
 </style>
 </head>
 
 <body>
 
+<!-- START SCREEN FOR MUSIC -->
+<div id="startScreen">Tap to open ❤️</div>
+
 <!-- MUSIC -->
-<iframe width="0" height="0"
-src="https://www.youtube.com/embed/fbM5yLhM2zg?autoplay=1&loop=1&playlist=fbM5yLhM2zg"
-frameborder="0" allow="autoplay"></iframe>
+<audio id="music" loop>
+    <source src="https://files.catbox.moe/9v2d3e.mp3" type="audio/mp3">
+</audio>
 
-<div class="container">
-
+<div class="container" style="display:none;" id="mainContent">
 <h1>Rahma, Will you be my Valentine? ❤️</h1>
 
 <div class="buttons">
 <button id="yesBtn">YES</button>
 <button id="noBtn">NO</button>
 </div>
-
 </div>
 
+<!-- Signature -->
+<div id="signature">ENG Mohab❤️</div>
+
 <script>
-// Floating hearts generator
+// Start music on tap
+const startScreen = document.getElementById("startScreen");
+const music = document.getElementById("music");
+const content = document.getElementById("mainContent");
+
+startScreen.onclick = () => {
+    music.play();
+    startScreen.style.display="none";
+    content.style.display="block";
+};
+
+// Floating hearts start immediately
 setInterval(() => {
     const heart = document.createElement("div");
     heart.innerHTML = "❤️";
     heart.classList.add("heart");
-    heart.style.left = Math.random() * 100 + "vw";
-    heart.style.fontSize = (Math.random() * 20 + 20) + "px";
+    heart.style.left = Math.random()*100+"vw";
+    heart.style.fontSize = (Math.random()*20+20)+"px";
     document.body.appendChild(heart);
-    setTimeout(() => heart.remove(), 6000);
-}, 400);
+    setTimeout(()=>heart.remove(),6000);
+},300);
 
 // NO button runs away
 const noBtn = document.getElementById("noBtn");
-
 function moveNo() {
-    const x = Math.random() * (window.innerWidth - 100);
-    const y = Math.random() * (window.innerHeight - 50);
-    noBtn.style.left = x + "px";
-    noBtn.style.top = y + "px";
+    const x = Math.random()*(window.innerWidth-120);
+    const y = Math.random()*(window.innerHeight-60);
+    noBtn.style.left = x+"px";
+    noBtn.style.top = y+"px";
 }
+noBtn.addEventListener("mouseover",moveNo);
+noBtn.addEventListener("mousedown",moveNo);
+noBtn.addEventListener("touchstart",moveNo);
 
-noBtn.addEventListener("mouseover", moveNo);
-noBtn.addEventListener("click", moveNo);
-
-// YES click effect
+// YES click effect with hearts explosion
 document.getElementById("yesBtn").onclick = () => {
-    document.body.innerHTML = `
-        <div style="
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            height:100vh;
-            font-size:70px;
-            font-weight:600;
-            color:white;
-            background:linear-gradient(135deg,#ff6a88,#ff99ac);
-        ">
-            YAAYY!! ❤️
-        </div>
+    content.style.display = "none";
+
+    // YAAYY message centered
+    const yayDiv = document.createElement("div");
+    yayDiv.style.cssText = `
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        height:100vh;
+        font-size:70px;
+        font-weight:600;
+        color:white;
+        background:linear-gradient(135deg,#ff6a88,#ff99ac);
+        flex-direction:column;
     `;
+    yayDiv.innerHTML = `<div id="yayText">HELL YEAHH!! ❤️</div>`;
+    document.body.appendChild(yayDiv);
+
+    // Hearts explosion at random positions around screen center
+    const centerX = window.innerWidth / 2;
+    const centerY = window.innerHeight / 2 + 50; // slightly lower
+    for(let i=0;i<100;i++){
+        const heart = document.createElement("div");
+        heart.innerHTML = "❤️";
+        heart.style.position="absolute";
+        // random offset from center
+        heart.style.left = centerX + (Math.random()-0.5)*400 + "px";
+        heart.style.top = centerY + (Math.random()-0.5)*300 + "px";
+        heart.style.fontSize = (Math.random()*30+20)+"px";
+        heart.style.opacity = 1;
+        document.body.appendChild(heart);
+
+        // Animate outward with faster fade
+        let dx = (Math.random()-0.5)*12;
+        let dy = (Math.random()-0.5)*12;
+        let op = 1;
+        const move = setInterval(()=>{
+            const left = parseFloat(heart.style.left);
+            const top = parseFloat(heart.style.top);
+            heart.style.left = left + dx + "px";
+            heart.style.top = top + dy + "px";
+            op -= 0.03;
+            heart.style.opacity = op;
+            if(op<=0){
+                heart.remove();
+                clearInterval(move);
+            }
+        },16);
+    }
 };
 </script>
 
