@@ -128,7 +128,7 @@ button {
 <div id="startScreen">Tap to open ❤️</div>
 
 <!-- MUSIC -->
-<audio id="music" loop>
+<audio id="music" loop preload="auto" playsinline>
     <source src="https://files.catbox.moe/tvzcqq.mp3" type="audio/mp3">
 </audio>
 
@@ -145,15 +145,20 @@ button {
 <div id="signature">UR Lovely Eng MO ❤️</div>
 
 <script>
-// Start music on tap
+// Start music on tap (iOS safe)
 const startScreen = document.getElementById("startScreen");
 const music = document.getElementById("music");
 const content = document.getElementById("mainContent");
 
-startScreen.onclick = () => {
-    music.play();
-    startScreen.style.display="none";
-    content.style.display="block";
+startScreen.onclick = async () => {
+    content.style.display = "block";
+    startScreen.style.display = "none";
+    try {
+        await music.play();
+        console.log("Music started 🎵");
+    } catch (err) {
+        console.log("iOS prevented autoplay, user may need to tap again", err);
+    }
 };
 
 // Floating hearts start immediately
