@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Rahma ❤️ Mohab</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #ff6a88, #ff99ac);
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    color: white;
+    text-align: center;
+}
+
+/* Floating hearts */
+.heart {
+    position: absolute;
+    font-size: 20px;
+    animation: float 6s linear infinite;
+}
+
+@keyframes float {
+    from { transform: translateY(100vh); opacity: 1; }
+    to { transform: translateY(-10vh); opacity: 0; }
+}
+
+.container {
+    max-width: 700px;
+    position: relative;
+}
+
+h1 {
+    font-size: 48px;
+    font-weight: 600;
+}
+
+.buttons {
+    position: relative;
+    margin-top: 40px;
+}
+
+button {
+    padding: 16px 36px;
+    font-size: 18px;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    margin: 15px;
+    transition: 0.3s;
+}
+
+#yesBtn {
+    background: white;
+    color: #ff6a88;
+    font-weight: 600;
+}
+
+#yesBtn:hover {
+    transform: scale(1.1);
+}
+
+#noBtn {
+    background: transparent;
+    border: 2px solid white;
+    color: white;
+    position: absolute;
+}
+</style>
+</head>
+
+<body>
+
+<!-- MUSIC -->
+<iframe width="0" height="0"
+src="https://www.youtube.com/embed/fbM5yLhM2zg?autoplay=1&loop=1&playlist=fbM5yLhM2zg"
+frameborder="0" allow="autoplay"></iframe>
+
+<div class="container">
+
+<h1>Rahma, Will you be my Valentine? ❤️</h1>
+
+<div class="buttons">
+<button id="yesBtn">YES</button>
+<button id="noBtn">NO</button>
+</div>
+
+</div>
+
+<script>
+// Floating hearts generator
+setInterval(() => {
+    const heart = document.createElement("div");
+    heart.innerHTML = "❤️";
+    heart.classList.add("heart");
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.fontSize = (Math.random() * 20 + 20) + "px";
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 6000);
+}, 400);
+
+// NO button runs away
+const noBtn = document.getElementById("noBtn");
+
+function moveNo() {
+    const x = Math.random() * (window.innerWidth - 100);
+    const y = Math.random() * (window.innerHeight - 50);
+    noBtn.style.left = x + "px";
+    noBtn.style.top = y + "px";
+}
+
+noBtn.addEventListener("mouseover", moveNo);
+noBtn.addEventListener("click", moveNo);
+
+// YES click effect
+document.getElementById("yesBtn").onclick = () => {
+    document.body.innerHTML = `
+        <div style="
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            height:100vh;
+            font-size:70px;
+            font-weight:600;
+            color:white;
+            background:linear-gradient(135deg,#ff6a88,#ff99ac);
+        ">
+            YAAYY!! ❤️
+        </div>
+    `;
+};
+</script>
+
+</body>
+</html>
